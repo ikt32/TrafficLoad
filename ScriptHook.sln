@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual C++ Express 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SampleCustom", "SampleCustom\SampleCustom.vcxproj", "{5DD209AC-1B5F-483A-BCA9-150CAD228C5A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ScriptHook", "ScriptHook\ScriptHook.vcxproj", "{73C4E82D-2874-43BA-B2DE-A8FE72497373}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5DD209AC-1B5F-483A-BCA9-150CAD228C5A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5DD209AC-1B5F-483A-BCA9-150CAD228C5A}.Debug|Win32.Build.0 = Debug|Win32
+		{5DD209AC-1B5F-483A-BCA9-150CAD228C5A}.Release|Win32.ActiveCfg = Release|Win32
+		{5DD209AC-1B5F-483A-BCA9-150CAD228C5A}.Release|Win32.Build.0 = Release|Win32
+		{73C4E82D-2874-43BA-B2DE-A8FE72497373}.Debug|Win32.ActiveCfg = Debug|Win32
+		{73C4E82D-2874-43BA-B2DE-A8FE72497373}.Debug|Win32.Build.0 = Debug|Win32
+		{73C4E82D-2874-43BA-B2DE-A8FE72497373}.Release|Win32.ActiveCfg = Release|Win32
+		{73C4E82D-2874-43BA-B2DE-A8FE72497373}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

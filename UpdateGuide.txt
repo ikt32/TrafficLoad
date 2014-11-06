@@ -1,0 +1,108 @@
+-----------------------------------------------------------------------
+A general upgrade info guide to ScriptHook 0.4.0+ from earlier versions
+-----------------------------------------------------------------------
+
+From 0.4.0, ScriptHook no longer has NativeThread and NativeFiberThread classes. 
+Instead there is one common thread class called ScriptThread. Additionally 0.4.0 
+provides a bunch of performance enhancements that require a new native declaration 
+style and recompilation of your scripts with the 0.4.0 SDK.
+
+1. To compile your older code with the 0.4.0 SDK, you have to change the base class
+   from which your custom thread inherits. For example, in SampleCustom\CustomThread.h
+
+      class CustomThread : 
+	public NativeThread
+
+
+   will become:
+
+      class CustomThread : 
+	public ScriptThread
+
+   Additionally, you'll have to fix the #include directives from:
+
+      #include "../ScriptHook/NativeThread.h"
+
+   to:
+
+      #include "../ScriptHook/ScriptThread.h"
+
+   A similar situation applies to SampleCustomFiber where you have to change
+   NativeFiberThread to ScriptThread.
+
+   The ScriptHook engine will automatically handle NativeThread and NativeFiberThread 
+   style of code depending on what which function you use. Using RunTick() will execute 
+   the code in a NativeThread like manner and using RunScript() will execute the code 
+   in a NativeFiberThread like manner. In addition to this, ScriptThread supports Wait()
+   and TerminateThisThread() for both RunScript and RunTick executed code.
+
+2. If you override Start() or Kill() in your custom thread, you need to change the 
+   declaration of this to OnStart() and OnKill(). Additionally, you will have to
+   call the overridden function on ScriptThread. For example, if you have the following 
+   code:
+
+      void CustomThread::Kill()
+      {
+         LogInfo("We got killed.");
+         NativeThread::Kill();
+      }
+
+   You will have to change this to:
+
+      void CustomThread::OnKill()
+      {
+         LogInfo("We got killed.");
+         ScriptThread::OnKill();
+      }
+
+   The similar situtation applies to Start() where you have to change Start() to OnStart().
+
+3. ScriptHook 0.4.0 includes a lot of performance enhancements. Most of these enhancements
+   are automatically applied when you recompile your code against the 0.4.0 SDK. However,
+   if you are using your own defined native function wrappers, you need to make some 
+   modifications to your definitions to get the performance gains. As an example, if the 
+   following was your native definition in CustomThread\Scripting.h:
+
+     static b8 DoesObjectExist(Object obj) 
+     { return NativeInvoke::Invoke<b8>("DOES_OBJECT_EXIST", obj); }
+
+   You will get better performance if you redefined this native as:
+
+     static b8 DoesObjectExist(Object obj) 
+     { return NativeInvoke::Invoke<NATIVE_DOES_OBJECT_EXIST, b8>(obj); }
+
+   The former unoptimized style of natives will continue to work, but will be slower than
+   the latter style.
+
+-----------------------------------------------------------------------
+A general upgrade info guide to ScriptHook 0.2.5+ from earlier versions
+-----------------------------------------------------------------------
+
+From 0.2.5 onwards, ScriptHook is distributed as a compiled dynamic dll instead
+of a static lib. This requires some minor changes be made to your code for this to work.
+
+1. Don't call ScriptHookManager::Initialize() -- This will be done for you automatically.
+
+2. Don't call ScriptHookManager::Shutdown() -- This will be done for you automatically as well!
+
+3. The only thing you have to do is register your threads using ScriptHookManager::Register()
+   See SampleCustom\Main.cpp
+
+4. Don't add loggers (both the ODS and File loggers are added automatically). You can however choose 
+   to add your own custom loggers if you have any. The File logger will always log to ScriptHook.log 
+   (not YourDllName.log). Note that custom loggers will capture log output from all ScriptHook clients.
+
+5. The new version of Scripting.h has more natives documented. These natives may clash with your own 
+   if you already have them defined with the same signature. You may choose to comment out yours (recommened) 
+   or comment out the one in Scripting.h. Note that if you have the same native declared but the parameters
+   are different, compilation should be fine (thanks to C++ overloading).
+
+   Also note that there are currently many incomplete enums. When invoking methods that require these enums you
+   can pass an integer value and cast it to the enum type, i.e: DamagePedBodyPart(ped, (ePedBodyPart)4, 50)
+
+6. The Debug compilation configuration requires additional dlls that your users may not have.
+   Remember to compile in Release mode when you build your final DLL to distribute.
+
+7. You may choose to include the release ScriptHook.dll along with your mod. However, it is
+   recommended that you instead link to the ScriptHook GTAForums topic so that your users will 
+   always have the latest version of ScriptHook.dll.
