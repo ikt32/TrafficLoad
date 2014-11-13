@@ -8,8 +8,6 @@
 
 # Build results
 
-[Dd]ebug/
-[Rr]elease/
 x64/
 build/
 [Bb]in/
@@ -154,3 +152,6 @@ $RECYCLE.BIN/
 
 # Mac desktop service store files
 .DS_Store
+/ScriptHook/Debug/ScriptHook.tlog
+/SampleCustom/Debug
+/SampleCustom/Release
